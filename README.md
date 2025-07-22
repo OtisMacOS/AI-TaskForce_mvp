@@ -3,7 +3,7 @@
 ## 📋 项目概述
 
 AI Think Tank MVP 是一个基于多智能体协作的AI项目咨询系统。通过5个专业AI Agent的协同工作，为用户提供从需求分析到技术选型的完整项目咨询服务。
-市场分析报告（gemini输出）Visit Here: https://otismacos.github.io/AI-TaskForce-maket-analysis/
+市场分析报告（gemini输出）Visit Here: [https://otismacos.github.io/AI-TaskForce-maket-analysis/](https://otismacos.github.io/AI-TaskForce_mvp/)
 
 
 ### 🎯 核心价值
