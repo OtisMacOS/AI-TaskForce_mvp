@@ -1,17 +1,18 @@
 from .base import BaseAgent
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 from typing import Dict, Any
 
 class ResearcherAgent(BaseAgent):
     def __init__(self, llm=None):
-        llm = llm or create_llm_function()
         super().__init__(
             role="Researcher",
             goal="为项目提供详实的市场调研和洞察分析",
-            backstory="你是一个AI市场调研专家，能够快速收集、分析并总结行业信息和趋势。",
-            llm=llm
+            backstory="你是一个AI市场调研专家，能够快速收集、分析并总结行业信息和趋势。"
         )
-        self._llm_function = llm
+        self._llm_function = create_llm_function()
 
     def _build_market_research_prompt(self, project_scope: str, target_market: str = "") -> str:
         """构建市场调研prompt"""

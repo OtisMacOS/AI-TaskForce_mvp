@@ -3,6 +3,9 @@ from .taskplanner import TaskPlannerAgent
 from .researcher import ResearcherAgent
 from .prdwriter import PRDWriterAgent
 from .toolfinder import ToolFinderAgent
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 
 class AgentFactory:

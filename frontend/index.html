@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Think Tank MVP - 智能PRD生成平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .chat-bubble {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .workflow-step {
+            transition: all 0.3s ease;
+        }
+        .workflow-step.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        .workflow-step.completed {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        .typing-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 导航栏 -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-brain text-2xl"></i>
+                    <h1 class="text-xl font-bold">AI Think Tank MVP</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="newProjectBtn" class="bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>新建项目
+                    </button>
+                    <button id="projectsBtn" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-folder mr-2"></i>项目管理
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 左侧：聊天界面 -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b">
+                        <h2 class="text-lg font-semibold text-gray-800">
+                            <i class="fas fa-comments mr-2 text-blue-500"></i>
+                            智能对话
+                        </h2>
+                        <p class="text-sm text-gray-600 mt-1">与AI参谋团对话，生成专业PRD文档</p>
+                    </div>
+                    
+                    <!-- 聊天消息区域 -->
+                    <div id="chatMessages" class="h-96 overflow-y-auto p-6 space-y-4">
+                        <!-- 欢迎消息 -->
+                        <div class="chat-bubble">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-robot text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="bg-blue-50 rounded-lg p-4">
+                                        <p class="text-gray-800">
+                                            你好！我是AI参谋团的总指挥。我可以帮助你：
+                                        </p>
+                                        <ul class="mt-2 text-sm text-gray-600 space-y-1">
+                                            <li>• 分析项目需求和技术可行性</li>
+                                            <li>• 制定详细的任务分解计划</li>
+                                            <li>• 进行市场调研和竞品分析</li>
+                                            <li>• 撰写专业的PRD文档</li>
+                                            <li>• 推荐合适的技术栈和工具</li>
+                                        </ul>
+                                        <p class="mt-3 text-sm text-gray-700">
+                                            请告诉我你想要开发什么项目？
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 输入区域 -->
+                    <div class="border-t bg-gray-50 p-4">
+                        <div class="flex space-x-3">
+                            <div class="flex-1">
+                                <textarea 
+                                    id="messageInput" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                    placeholder="描述你的项目需求，例如：我想开发一个在线教育平台..."
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                            <button 
+                                id="sendBtn" 
+                                class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center"
+                            >
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                发送
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧：工作流状态 -->
+            <div class="space-y-6">
+                <!-- 工作流状态 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-project-diagram mr-2 text-green-500"></i>
+                        工作流状态
+                    </h3>
+                    <div id="workflowStatus" class="space-y-3">
+                        <div class="workflow-step p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-tie text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">ChiefMind</span>
+                                </div>
+                                <span class="text-xs text-gray-500">待执行</span>
+                            </div>
+                        </div>
+                        <div class="workflow-step p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-tasks text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">TaskPlanner</span>
+                                </div>
+                                <span class="text-xs text-gray-500">待执行</span>
+                            </div>
+                        </div>
+                        <div class="workflow-step p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-search text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">Researcher</span>
+                                </div>
+                                <span class="text-xs text-gray-500">待执行</span>
+                            </div>
+                        </div>
+                        <div class="workflow-step p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-file-alt text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">PRDWriter</span>
+                                </div>
+                                <span class="text-xs text-gray-500">待执行</span>
+                            </div>
+                        </div>
+                        <div class="workflow-step p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-tools text-gray-600 text-xs"></i>
+                                    </div>
+                                    <span class="text-sm font-medium">ToolFinder</span>
+                                </div>
+                                <span class="text-xs text-gray-500">待执行</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 项目信息 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                        项目信息
+                    </h3>
+                    <div id="projectInfo" class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">项目状态:</span>
+                            <span class="text-gray-800 font-medium">未开始</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">创建时间:</span>
+                            <span class="text-gray-800">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">任务数量:</span>
+                            <span class="text-gray-800">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 快速操作 -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-bolt mr-2 text-yellow-500"></i>
+                        快速操作
+                    </h3>
+                    <div class="space-y-3">
+                        <button class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition-colors text-sm">
+                            <i class="fas fa-download mr-2"></i>导出PRD
+                        </button>
+                        <button class="w-full bg-purple-500 text-white py-2 px-4 rounded-lg hover:bg-purple-600 transition-colors text-sm">
+                            <i class="fas fa-share mr-2"></i>分享项目
+                        </button>
+                        <button class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors text-sm">
+                            <i class="fas fa-trash mr-2"></i>删除项目
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框：新建项目 -->
+    <div id="newProjectModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">新建项目</h3>
+            <form id="newProjectForm">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">项目名称</label>
+                        <input type="text" id="projectName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">项目描述</label>
+                        <textarea id="projectDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" id="cancelNewProject" class="px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">创建</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html> 

@@ -8,7 +8,7 @@ DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+Base = declarative_base() 
 
 # --- 数据库迁移脚本（手动示例）---
 # 如果你没有用Alembic等自动迁移工具，可以用如下SQL手动迁移：

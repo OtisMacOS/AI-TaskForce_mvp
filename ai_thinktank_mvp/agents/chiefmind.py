@@ -1,18 +1,24 @@
 from .base import BaseAgent
 import json
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 from typing import Dict, Any, Literal
 
 class ChiefMindAgent(BaseAgent):
     def __init__(self, llm=None):
-        llm = llm or create_llm_function()
         super().__init__(
             role="ChiefMind",
             goal="作为AI参谋团的头脑，负责需求分析、结果整合和项目评估",
-            backstory="你是一个经验丰富的AI项目顾问，擅长通过对话理解用户需求，协调多个AI专家协作，并提供综合建议。",
-            llm=llm
+            backstory="你是一个经验丰富的AI项目顾问，擅长通过对话理解用户需求，协调多个AI专家协作，并提供综合建议。"
         )
-        self._llm_function = llm
+        # 保留LLM函数用于直接调用
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+        from llm_module import create_llm_function
+        self._llm_function = create_llm_function()
 
     def _build_requirement_analysis_prompt(self, user_goal: str, user_context: str = "") -> str:
         """构建需求分析prompt"""

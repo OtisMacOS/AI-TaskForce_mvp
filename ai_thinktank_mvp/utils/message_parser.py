@@ -1,4 +1,7 @@
 from typing import Dict, Any
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 import json
 

@@ -1,19 +1,25 @@
 from .base import BaseAgent
 import datetime
 import json
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function, chat_completion
 from typing import Literal, Any
 
 class TaskPlannerAgent(BaseAgent):
     def __init__(self, llm=None):
-        llm = llm or create_llm_function()
         super().__init__(
             role="TaskPlanner",
             goal="将用户需求拆解为任务树",
-            backstory="你是一个善于结构化思考的AI，负责将项目目标拆解为阶段、任务和子任务。",
-            llm=llm
+            backstory="你是一个善于结构化思考的AI，负责将项目目标拆解为阶段、任务和子任务。"
         )
-        self._llm_function = llm
+        # 保留LLM函数用于直接调用
+        import sys
+        import os
+        sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+        from llm_module import create_llm_function
+        self._llm_function = create_llm_function()
 
     def _build_prompt(self, user_goal: str, output_format: str) -> str:
         return f"""

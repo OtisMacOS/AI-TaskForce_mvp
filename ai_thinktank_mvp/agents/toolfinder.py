@@ -1,17 +1,18 @@
 from .base import BaseAgent
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 from typing import Dict, Any
 
 class ToolFinderAgent(BaseAgent):
     def __init__(self, llm=None):
-        llm = llm or create_llm_function()
         super().__init__(
             role="ToolFinder",
             goal="为项目推荐合适的工具和技术方案",
-            backstory="你是一个AI技术选型专家，能够根据项目需求分析并推荐最佳工具和技术路径。",
-            llm=llm
+            backstory="你是一个AI技术选型专家，能够根据项目需求分析并推荐最佳工具和技术路径。"
         )
-        self._llm_function = llm
+        self._llm_function = create_llm_function()
 
     def _build_tool_selection_prompt(self, project_scope: str, feature_specs: str) -> str:
         """构建工具选型prompt"""

@@ -45,4 +45,17 @@ Thumbs.db
 
 # Logs
 *.log
-logs/ 
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Test files (keep test files in tests/ directory)
+test_*.py
+tests/test_*.py
+
+# Temporary files
+*.tmp
+*.temp 

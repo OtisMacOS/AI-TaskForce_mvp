@@ -1,17 +1,18 @@
 from .base import BaseAgent
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from llm_module import create_llm_function
 from typing import Dict, Any
 
 class PRDWriterAgent(BaseAgent):
     def __init__(self, llm=None):
-        llm = llm or create_llm_function()
         super().__init__(
             role="PRDWriter",
             goal="根据任务树和用户需求撰写高质量的PRD文档",
-            backstory="你是一个资深产品经理AI，擅长将需求转化为结构化的产品需求文档。",
-            llm=llm
+            backstory="你是一个资深产品经理AI，擅长将需求转化为结构化的产品需求文档。"
         )
-        self._llm_function = llm
+        self._llm_function = create_llm_function()
 
     def _build_prd_writing_prompt(self, requirements: str, market_report: str) -> str:
         """构建PRD撰写prompt"""

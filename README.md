@@ -3,6 +3,12 @@
 ## 📋 项目概述
 
 AI Think Tank MVP 是一个基于多智能体协作的AI项目咨询系统。通过5个专业AI Agent的协同工作，为用户提供从需求分析到技术选型的完整项目咨询服务。
+
+### 🎯 **MVP版本特点**
+- **轻量级设计**: 使用GPT-3.5-turbo模型，快速响应，成本友好
+- **核心功能完整**: 涵盖项目咨询的完整工作流程
+- **易于扩展**: 模块化设计，为后续升级到更复杂的模型和工业级功能奠定基础
+- **演示就绪**: 开箱即用，适合演示和概念验证
 市场分析报告（gemini输出）Visit Here: https://otismacos.github.io/AI-TaskForce-maket-analysis/
 
 
@@ -249,8 +255,15 @@ curl -X POST "http://localhost:8000/workflow/chat" \
 - **Alembic** - 数据库迁移工具
 - **Pydantic** - 数据验证和序列化
 
+### 模型架构演进
+- **MVP阶段**: GPT-3.5-turbo - 轻量级，快速响应
+- **进阶阶段**: GPT-4 - 更复杂的推理和文档生成
+- **工业级阶段**: 多模型架构 - Claude、Vertex AI等，支持更复杂的交互和工业级文档生成
+
 ### AI/ML技术
-- **OpenAI GPT** - 大语言模型
+- **OpenAI GPT-3.5-turbo** - MVP版本使用的大语言模型
+- **OpenAI GPT-4** - 计划升级的高级模型（支持更复杂的推理）
+- **Claude/Vertex AI** - 计划支持的多模型架构
 - **LangChain** - LLM应用框架
 - **Prompt Engineering** - 提示词工程
 
@@ -295,6 +308,16 @@ ai_thinktank_mvp/
 ├── db/                   # 数据库文件
 ├── alembic/              # 数据库迁移
 ├── tests/                # 测试文件
+│   ├── test_agents.py    # Agent单元测试
+│   ├── test_database_crud.py # 数据库CRUD测试
+│   ├── test_simple.py    # 基础功能测试
+│   ├── test_basic_workflow.py # 工作流测试
+│   ├── test_config.py    # 配置测试
+│   └── test_summary_report.md # 测试报告
+├── frontend/             # 前端界面
+│   ├── index.html        # 主页面
+│   ├── app.js           # 前端逻辑
+│   └── server.py        # 前端服务器
 ├── requirements.txt      # 依赖包
 └── README.md            # 项目文档
 ```
