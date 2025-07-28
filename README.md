@@ -368,9 +368,9 @@ ai_thinktank_mvp/
 
 ## 📞 联系方式
 
-- 项目维护者：[Your Name]
-- 邮箱：[your.email@example.com]
-- 项目地址：[GitHub Repository URL]
+- 项目维护者：[Otis K]
+- 邮箱：[Otis_da@163.com]
+- 项目地址：[https://github.com/OtisMacOS/AI-TaskForce_mvp]
 
 ## 🙏 致谢
 
